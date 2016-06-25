@@ -1,0 +1,63 @@
+{ "height":6,
+ "layers":[
+        {
+         "data":[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+                 1, 1, 1, 2, 1, 1, 1, 1, 1, 1,
+                 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 
+                 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         "height":6,
+         "name":"Tile Layer 1",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":5,
+         "x":0,
+         "y":0
+        }],
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "properties":
+    {
+
+    },
+ "renderorder":"right-down",
+ "tileheight":64,
+ "tilesets":[
+        {
+         "columns":1,
+         "firstgid":1,
+         "image":"ice.png",
+         "imageheight":64,
+         "imagewidth":64,
+         "margin":0,
+         "name":"ice",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":64,
+         "tilewidth":64
+        }, 
+        {
+         "columns":1,
+         "firstgid":2,
+         "image":"ice_water.png",
+         "imageheight":64,
+         "imagewidth":64,
+         "margin":0,
+         "name":"ice_water",
+         "properties":
+            {
+
+            },
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":64,
+         "tilewidth":64
+        }],
+ "tilewidth":64,
+ "version":1,
+ "width":6
+}
