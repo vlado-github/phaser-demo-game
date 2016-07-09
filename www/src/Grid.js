@@ -9,7 +9,7 @@ var Grid = {
 };
 
 var hero;
-var map;
+var safeRoute;
 var score = 0;
 var scoreText;
 var timer;
@@ -19,7 +19,6 @@ var isFinished = false;
 Grid.Init = function (game) {};
 Grid.Init.prototype = {
     create : function () {
-        debugger;
         var isSuccess = this.generateRoute();
         // todo: handle error
         
@@ -30,21 +29,21 @@ Grid.Init.prototype = {
             for(j=0; j<Grid.ROWS; j++){
                 if(j==0 && i == Grid.COLUMNS-1){
                     //Finish
-                    gridLayer.create(i*Grid.TILE_WIDTH, j*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 
-                    'ice');
+                    gridLayer.create(i*Grid.TILE_WIDTH, j*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 'ice');
                 } else {
                     gridLayer.create(i*Grid.TILE_WIDTH, j*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 'ice_water'); 
                 }
             }
         }
         
-        //SafeRoute
-//        var safeRoute = RouteController.getSafeRoute();
-//        var n;
-//        for(n=0; n<safeRoute.length; n++){
-//            var tile = safeRoute[n];
-//            map[tile.y][tile.x] = gridLayer.create(tile.y*Grid.TILE_WIDTH, tile.x*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 'ice');
-//        }
+        // saferoute
+        safeRoute = RouteController.getSafeRoute();
+        // test purpose only: this shows safe route and should be removed
+        var n;
+        for(n=0; n<safeRoute.length; n++){
+            var tile = safeRoute[n];
+            gridLayer.create(tile.y*Grid.TILE_WIDTH, tile.x*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 'ice');
+       }
         
         // Hero
         var heroLayer = game.add.group();
@@ -117,6 +116,6 @@ Grid.Init.prototype = {
             Grid.COLUMNS - 1);
         }
         return status;
-    } 
+    }
 
 };

@@ -25,7 +25,6 @@ var RouteController = {
     },
     
     getNextTiles : function (row, column) {
-        debugger;
         var nextTiles = [];
         var i = 0;
         var possibleRowUp = row - 1;
@@ -103,7 +102,6 @@ var RouteController = {
         startColumn, 
         endRow, 
         endColumn) {
-        debugger;
             var startPoint = new Tile(startRow, startColumn);
             var endPoint = new Tile(endRow, endColumn);
             safeRoute.push(startPoint);
