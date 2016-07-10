@@ -94,6 +94,19 @@ var RouteController = {
     getSafeRoute : function() {
         return safeRoute;
     },
+
+    safeRouteContainsTile : function(iceTileRow, iceTileColumn){
+        var n;
+        if(safeRoute != null && safeRoute.length > 0) {
+            for(n=0; n<safeRoute.length; n++){
+                var tile = safeRoute[n];
+                if(tile.x == iceTileColumn && tile.y == iceTileRow){
+                    return true;
+                }
+            }
+        }
+        return false;
+    },
     
     create : function (
         numOfRows, 
