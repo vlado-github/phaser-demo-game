@@ -10,6 +10,8 @@ var Grid = {
 
 var hero;
 var heroLayer;
+var heroSpeed = 5;
+var heroBlinkAnimation = null;
 var iceWaterLayer;
 var safeRoute;
 var safeRouteLayer;
@@ -18,6 +20,8 @@ var scoreText;
 var timer;
 var popup;
 var isFinished = false;
+var iceWaterStartTime = null;
+var iceWaterDelayTime = 2500;
 
 Grid.Init = function (game) {};
 Grid.Init.prototype = {
@@ -27,7 +31,7 @@ Grid.Init.prototype = {
         
         // Safe Route
         safeRoute = RouteController.getSafeRoute();
-        safeRouteLayer = this.add.group();
+        safeRouteLayer = this.add.physicsGroup();
 
         // Map
         var i,j;
@@ -50,6 +54,8 @@ Grid.Init.prototype = {
         // Hero
         hero = game.add.sprite(0,height-Grid.HERO_HEIGHT,'hero');
         this.game.physics.arcade.enable(hero);
+        heroBlinkAnimation = this.game.add.tween(hero).to({ alpha: 0 }, 300, Phaser.Easing.Linear.None, true, 0, 100, true);
+        heroBlinkAnimation.pause();
         
         // Score Board
         scoreText = game.add.text(0, 0, "Score: " + score, { fontSize: '32px', fill: '#ffffff' });        
@@ -70,24 +76,42 @@ Grid.Init.prototype = {
         isFinished = true;
     },
 
-    processHandler : function (hero, tile) {
-        return true;
+    iceWaterProcessHandler : function (hero, iceWater) {
+        if(iceWaterStartTime == null){
+            iceWaterStartTime = this.game.time.now;
+            heroBlinkAnimation.resume();
+            return false;
+        } else if(this.game.time.now - iceWaterStartTime > iceWaterDelayTime){
+            iceWaterStartTime = null;
+            return true;
+        } 
+        return false;
     },
 
-    collisionHandler : function (hero, tile) {
-        this.game.time.events.add(Phaser.Timer.SECOND * 2, hero.kill(), this);
+    iceWaterOverlapHandler : function (hero, iceWater) {
+        this.game.time.events.add(Phaser.Timer.SECOND * 1, hero.kill(), this);
+    },
+
+    safeGroundOverlapHandler : function (hero, safeGround) {
+        hero.alpha = 1;
+        heroBlinkAnimation.pause();
+        iceWaterStartTime = null;
     },
     
     update : function () {
         var offset = 1;
-        if (this.game.physics.arcade.collide(hero, iceWaterLayer, this.collisionHandler, this.processHandler, this))
-        {
+        if (this.game.physics.arcade.overlap(hero, iceWaterLayer, this.iceWaterOverlapHandler, this.iceWaterProcessHandler, this)){
             console.log('boom');
+        } 
+
+        if (this.game.physics.arcade.overlap(hero, safeRouteLayer, this.safeGroundOverlapHandler, null, this)){
+            //console.log('safe');
         }
 
         hero.body.velocity.x = 0;
         hero.body.velocity.y = 0;
 
+        //Game finished
         if(hero.x > width - Grid.TILE_WIDTH
            && hero.y < Grid.TILE_HEIGHT){
             this.input.enabled = false;
@@ -99,14 +123,14 @@ Grid.Init.prototype = {
         {
             if(hero.x - 1 >= 0){
                 hero.x--;
-                hero.body.velocity.x = -20
+                hero.body.velocity.x = -heroSpeed
             }
         }
         else if (this.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
         {
             if(hero.x + 1 <= (width - Grid.HERO_WIDTH)){
                 hero.x++;
-                hero.body.velocity.x = 20
+                hero.body.velocity.x = heroSpeed
             }
         }
 
@@ -114,14 +138,14 @@ Grid.Init.prototype = {
         {
             if(hero.y - 1 >= Grid.SCORE_BOARD_HEIGHT){
                 hero.y--;
-                hero.body.velocity.y = -20
+                hero.body.velocity.y = -heroSpeed
             }
         }
         else if (this.input.keyboard.isDown(Phaser.Keyboard.DOWN))
         {
             if(hero.y + 1 <= (height - Grid.HERO_HEIGHT)){
                 hero.y++;
-                hero.body.velocity.y = 20
+                hero.body.velocity.y = heroSpeed
             }
         }
     },
