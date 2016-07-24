@@ -22,6 +22,7 @@ var popup;
 var isFinished = false;
 var iceWaterStartTime = null;
 var iceWaterDelayTime = 2500;
+var timer;
 
 Grid.Init = function (game) {};
 Grid.Init.prototype = {
@@ -46,11 +47,12 @@ Grid.Init.prototype = {
                     safeRouteLayer.create(i*Grid.TILE_WIDTH, j*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 'ice');
                 } else {
                     var iceWater = iceWaterLayer.create(i*Grid.TILE_WIDTH, j*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 'ice_water'); 
+                    // var iceWater = iceWaterLayer.create(i*Grid.TILE_WIDTH, j*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 'ice'); 
                     iceWater.body.mass = -100;
                 }
             }
         }
-        
+
         // Hero
         hero = game.add.sprite(0,height-Grid.HERO_HEIGHT,'hero');
         this.game.physics.arcade.enable(hero);
@@ -59,10 +61,14 @@ Grid.Init.prototype = {
         
         // Score Board
         scoreText = game.add.text(0, 0, "Score: " + score, { fontSize: '32px', fill: '#ffffff' });        
-        
     },
     
     finish : function () {
+        // timer.stop();
+        var totalTime = Math.round(this.game.time.totalElapsedSeconds());
+        score = ScoringController.handleTimeLapsedInSec(totalTime);    
+        scoreText.text = "Score: " + score;
+
         //Finish popup dialog
         var text_options = { 
             font: '32px Arial',       
@@ -89,7 +95,18 @@ Grid.Init.prototype = {
     },
 
     iceWaterOverlapHandler : function (hero, iceWater) {
+        isFinished = true;
         this.game.time.events.add(Phaser.Timer.SECOND * 1, hero.kill(), this);
+        // Popup message dialog
+        var text_options = { 
+            font: '32px Arial',       
+            fill: '#ffffff', 
+            align: 'center'};
+        var text = this.game.add.text(
+            this.game.world.centerX, 
+            this.game.world.centerY, 
+            "D'OH! \nHit [F5] \nto start again.", text_options);
+        text.anchor.set(0.5);
     },
 
     safeGroundOverlapHandler : function (hero, safeGround) {
@@ -99,6 +116,14 @@ Grid.Init.prototype = {
     },
     
     update : function () {
+        if(isFinished){
+            hero.kill();
+            return;
+        }
+        // Time
+        var time = this.game.time.totalElapsedSeconds();
+        scoreText.text = "Time: " + parseFloat(time).toPrecision(4);
+
         var offset = 1;
         if (this.game.physics.arcade.overlap(hero, iceWaterLayer, this.iceWaterOverlapHandler, this.iceWaterProcessHandler, this)){
             console.log('boom');
