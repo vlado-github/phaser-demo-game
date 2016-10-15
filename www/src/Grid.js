@@ -42,7 +42,7 @@ Grid.Init.prototype = {
             for(j=0; j<Grid.ROWS; j++){
                 if(j==0 && i == Grid.COLUMNS-1){
                     //Finish
-                    gridLayer.create(i*Grid.TILE_WIDTH, j*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 'ice');
+                    gridLayer.create(i*Grid.TILE_WIDTH, j*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 'finish');
                 } else if(RouteController.safeRouteContainsTile(i, j)){
                     safeRouteLayer.create(i*Grid.TILE_WIDTH, j*Grid.TILE_HEIGHT+Grid.SCORE_BOARD_HEIGHT, 'ice');
                 } else {
@@ -55,6 +55,8 @@ Grid.Init.prototype = {
 
         // Hero
         hero = game.add.sprite(0,height-Grid.HERO_HEIGHT,'hero');
+        hero.animations.add('run');
+        hero.animations.play('run', 10, true);
         this.game.physics.arcade.enable(hero);
         heroBlinkAnimation = this.game.add.tween(hero).to({ alpha: 0 }, 300, Phaser.Easing.Linear.None, true, 0, 100, true);
         heroBlinkAnimation.pause();
